@@ -1,0 +1,6 @@
+requests
+phonenumbers
+scapy
+dnspython
+python-whois
+rich
