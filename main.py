@@ -80,7 +80,6 @@ def update():
     gradient_text("[*] Checking for updates...")
 
     try:
-        # Check that this is a Git repository
         subprocess.run(
             ["git", "rev-parse", "--is-inside-work-tree"],
             check=True,
@@ -88,7 +87,6 @@ def update():
             stderr=subprocess.DEVNULL
         )
 
-        # Download latest information from GitHub
         subprocess.run(
             ["git", "fetch", "origin", "main"],
             check=True,
@@ -96,19 +94,16 @@ def update():
             stderr=subprocess.DEVNULL
         )
 
-        # Get current local commit
         local = subprocess.check_output(
             ["git", "rev-parse", "HEAD"],
             text=True
         ).strip()
 
-        # Get latest remote commit
         remote = subprocess.check_output(
             ["git", "rev-parse", "origin/main"],
             text=True
         ).strip()
 
-        # Already updated
         if local == remote:
             gradient_text("[+] Already up to date.")
             time.sleep(1)
@@ -116,7 +111,6 @@ def update():
 
         gradient_text("[*] Update available!")
 
-        # Update local files
         subprocess.run(
             ["git", "reset", "--hard", "origin/main"],
             check=True
