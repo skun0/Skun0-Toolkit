@@ -10,7 +10,7 @@ from rich.text import Text
 from phonenumbers import geocoder, carrier, timezone
 from requests.structures import CaseInsensitiveDict
 
-VERSION = 1.0
+VERSION = 1.1
 UP_TO_DATE = True # maybe using this later
 
 console = Console()
@@ -123,15 +123,12 @@ def update():
         )
 
         gradient_text("[+] Update downloaded.")
-        gradient_text("[*] Restarting Skun0-Toolkit...")
+        gradient_text("[*] Press enter to restart...")
 
-        time.sleep(2)
+        os.system("pause > nul")
+        os._exit(0)
 
-        # Restart Python using the updated main.py
-        os.execv(
-            sys.executable,
-            [sys.executable] + sys.argv
-        )
+        
 
     except subprocess.CalledProcessError:
         gradient_text("[-] Git update failed.")
