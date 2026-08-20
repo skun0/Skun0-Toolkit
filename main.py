@@ -1,6 +1,6 @@
 # Developed by https://github.com/skun0
 
-import os, requests, time, ctypes, phonenumbers, subprocess, json, socket, asyncio, dns.resolver, whois, string, re
+import os, requests, time, ctypes, phonenumbers, subprocess, json, socket, asyncio, dns.resolver, whois, string, re, sys
 
 from scapy.all import ARP, Ether, srp
 from datetime import datetime
@@ -80,38 +80,66 @@ def update():
     gradient_text("[*] Checking for updates...")
 
     try:
+        # Check that this is a Git repository
         subprocess.run(
-            ["git", "fetch", "origin"],
+            ["git", "rev-parse", "--is-inside-work-tree"],
             check=True,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )
 
+        # Download latest information from GitHub
+        subprocess.run(
+            ["git", "fetch", "origin", "main"],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+
+        # Get current local commit
         local = subprocess.check_output(
             ["git", "rev-parse", "HEAD"],
             text=True
         ).strip()
 
+        # Get latest remote commit
         remote = subprocess.check_output(
             ["git", "rev-parse", "origin/main"],
             text=True
         ).strip()
 
+        # Already updated
         if local == remote:
             gradient_text("[+] Already up to date.")
+            time.sleep(1)
             return
 
         gradient_text("[*] Update available!")
 
+        # Update local files
         subprocess.run(
             ["git", "reset", "--hard", "origin/main"],
             check=True
         )
 
-        gradient_text("[+] Updated successfully.")
+        gradient_text("[+] Update downloaded.")
+        gradient_text("[*] Restarting Skun0-Toolkit...")
+
+        time.sleep(2)
+
+        # Restart Python using the updated main.py
+        os.execv(
+            sys.executable,
+            [sys.executable] + sys.argv
+        )
 
     except subprocess.CalledProcessError:
-        gradient_text("[-] Could not update.")
+        gradient_text("[-] Git update failed.")
+        pause()
+
+    except Exception as e:
+        gradient_text(f"[-] Update error: {e}")
+        pause()
 
 def menu():
     banner = f'''
