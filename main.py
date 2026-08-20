@@ -10,7 +10,7 @@ from rich.text import Text
 from phonenumbers import geocoder, carrier, timezone
 from requests.structures import CaseInsensitiveDict
 
-VERSION = 1.0
+VERSION = 1.1
 UP_TO_DATE = True # maybe using this later
 
 console = Console()
