@@ -81,7 +81,7 @@ def update():
 
     try:
         subprocess.run(
-            ["git", "fetch"],
+            ["git", "fetch", "origin"],
             check=True,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
@@ -93,22 +93,22 @@ def update():
         ).strip()
 
         remote = subprocess.check_output(
-            ["git", "rev-parse", "@{u}"],
+            ["git", "rev-parse", "origin/main"],
             text=True
         ).strip()
 
-        if local != remote:
-            gradient_text("[*] Update available!")
-
-            subprocess.run(
-                ["git", "pull"],
-                check=True
-            )
-
-            gradient_text("[+] Updated successfully.")
-
-        else:
+        if local == remote:
             gradient_text("[+] Already up to date.")
+            return
+
+        gradient_text("[*] Update available!")
+
+        subprocess.run(
+            ["git", "reset", "--hard", "origin/main"],
+            check=True
+        )
+
+        gradient_text("[+] Updated successfully.")
 
     except subprocess.CalledProcessError:
         gradient_text("[-] Could not update.")
